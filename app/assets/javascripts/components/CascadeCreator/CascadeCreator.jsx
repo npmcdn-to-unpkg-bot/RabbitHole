@@ -174,7 +174,7 @@
         parent = this.getParent(e);
 
         paragraphs = this.getParagraphs(html);
-      });
+      }.bind(this));
 
 
       // alert('got here');
