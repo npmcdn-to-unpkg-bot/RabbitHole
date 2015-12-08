@@ -146,7 +146,7 @@
     handleLink: function(e){
       var searchURL;
 
-      alert('got here');
+      // alert('got here');
       // var search;
       // e.preventDefault();
       // if (this.state.urls.length === 0 || this.state.urls.indexOf(e.target.getAttribute("href")) > -1) {
@@ -170,7 +170,7 @@
       //     that = this;
       //
           $.get(searchURL, function(data){
-            alert(data.contents);
+            console.log(data);
           });
       //       // var articleContent, title2, paragraph, temp, parent, redirect, firstParagraph;
       //       // temp = $(data);
