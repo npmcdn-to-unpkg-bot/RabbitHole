@@ -162,7 +162,7 @@
       }
 
       return parent;
-    }
+    },
 
     handleLink: function(e){
       var html, parent, paragraphs;
