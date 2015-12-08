@@ -159,7 +159,7 @@
     },
 
     getParagraphs: function(html) {
-      console.log(html);
+      $(html).find("p:lt(3)")
     },
 
     handleLink: function(e){
@@ -174,6 +174,7 @@
         parent = this.getParent(e);
 
         paragraphs = this.getParagraphs(html);
+        $("<div></div>").append(paragraphs).addClass("bordered-paragraph").insertAfter(parent);
       }.bind(this));
 
 
