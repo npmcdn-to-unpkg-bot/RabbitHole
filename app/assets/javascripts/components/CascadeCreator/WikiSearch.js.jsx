@@ -36,7 +36,7 @@
         return;
       }
 
-      searchURL = 'http://en.wikipedia.org/w/api.php?action=query&list=allpages&apfrom=' +
+      searchURL = 'https://en.wikipedia.org/w/api.php?action=query&list=allpages&apfrom=' +
         encodeURIComponent(term) + '&aplimit=10&format=json';
       $.ajax({
         method: 'GET',
