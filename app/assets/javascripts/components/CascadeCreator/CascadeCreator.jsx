@@ -143,9 +143,35 @@
       return {date: 0, content: "", title: "", conductingSearch: true, toggle: true, e: null, numSearches: 0, urls: []};
     },
 
-    handleLink: function(e){
+    getHTML: function(e) {
       var searchURL;
+      searchURL = window.location.origin + '/wiki/' +
+      e.target.getAttribute("href").split("/wiki/")[1];
 
+      $.get(searchURL, function(data){
+        return data;
+      });
+    },
+
+    getParent: function(e) {
+      var parent;
+      parent = e.target.parentNode;
+
+      while (["I","B"].indexOf(parent.tagName) > -1) {
+        parent = parent.parentNode;
+      }
+
+      return parent;
+    }
+
+    handleLink: function(e){
+      var html, parent, paragraphs;
+
+      html = this.getHTML(e);
+
+      parent = this.getParent(e);
+
+      paragraphs = this.getParagraphs(html);
       // alert('got here');
       // var search;
       // e.preventDefault();
@@ -162,17 +188,7 @@
       //
       //     this.setState({searches: this.state.urls.concat(e.target.getAttribute("href"))});
       //
-          searchURL = window.location.origin + '/wiki/' +
-          e.target.getAttribute("href").split("wiki/")[1];
-          alert(searchURL);
-          console.log(searchURL);
-      //     title = e.target.textContent;
-      //     this.setState({e: e});
-      //     that = this;
-      //
-          $.get(searchURL, function(data){
-            console.log(data);
-          });
+
       //       // var articleContent, title2, paragraph, temp, parent, redirect, firstParagraph;
       //       // temp = $(data);
       //       //
