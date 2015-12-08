@@ -144,13 +144,7 @@
     },
 
     getHTML: function(e) {
-      var searchURL;
-      searchURL = window.location.origin + '/wiki/' +
-      e.target.getAttribute("href").split("/wiki/")[1];
 
-      $.get(searchURL, function(data){
-        return data;
-      });
     },
 
     getParent: function(e) {
@@ -171,11 +165,18 @@
     handleLink: function(e){
       var html, parent, paragraphs;
 
-      html = this.getHTML(e);
+      var searchURL, html;
+      searchURL = window.location.origin + '/wiki/' +
+      e.target.getAttribute("href").split("/wiki/")[1];
 
-      parent = this.getParent(e);
+      $.get(searchURL, function(data){
+        html = data;
+        parent = this.getParent(e);
 
-      paragraphs = this.getParagraphs(html);
+        paragraphs = this.getParagraphs(html);
+      });
+
+
       // alert('got here');
       // var search;
       // e.preventDefault();
