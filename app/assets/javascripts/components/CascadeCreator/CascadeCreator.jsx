@@ -159,7 +159,7 @@
     },
 
     getParagraphs: function(html) {
-      $(html).find("p:lt(3)")
+      return $(html).find("p:lt(3)")
     },
 
     handleLink: function(e){
