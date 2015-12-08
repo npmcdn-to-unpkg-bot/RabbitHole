@@ -162,7 +162,7 @@
       //
       //     this.setState({searches: this.state.urls.concat(e.target.getAttribute("href"))});
       //
-          searchURL = 'http://localhost:3000/wiki/' +
+          searchURL = window.location.origin + '/wiki/' +
           e.target.getAttribute("href").split("wiki/")[1];
           alert(searchURL);
       //     title = e.target.textContent;
