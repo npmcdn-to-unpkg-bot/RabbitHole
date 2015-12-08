@@ -165,6 +165,7 @@
           searchURL = window.location.origin + '/wiki/' +
           e.target.getAttribute("href").split("wiki/")[1];
           alert(searchURL);
+          console.log(searchURL);
       //     title = e.target.textContent;
       //     this.setState({e: e});
       //     that = this;
