@@ -1,0 +1,195 @@
+article {
+
+  blockquote {
+    margin: 2vh !important;
+  }
+
+  div > .in-block:first-of-type {
+      padding-top: 0 !important;
+    }
+
+  font-size: 1.15em;
+  padding:2vh;
+
+  ul li {
+    list-style-type: none;
+  }
+
+  .reflist {
+    margin-left:2vh;
+  }
+
+  .wikitable {
+    margin-left:1vh;
+
+    tr {
+      background: rgb(250,250,250);
+    }
+
+    tr:first-child {
+      background: #D7DBD8;
+    }
+  }
+
+
+
+  ul, ol:not(.references) {
+    display: table;
+    text-align:left;
+    padding-left: 2vh;
+  }
+
+
+  div.thumb {
+    padding-bottom:1vh;
+  }
+
+  div dl:first-of-type, div dd:first-of-type {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  p:empty, span:empty {
+    display:none;
+  }
+
+  table.infobox {
+    margin: 0 auto;
+    min-width: 25vw;
+    background-color:#eee;
+    font-size: 0.9em;
+
+    img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    th {
+      text-align: left;
+    }
+  }
+
+  ol, ul {
+    padding-bottom: 1vh !important;
+    li {
+      margin-left: 1.2vw;
+    }
+  }
+
+  ol li {
+    list-style:decimal;
+  }
+
+  h1, h2, h3 {
+    padding-bottom: 0.2em !important;
+  }
+
+  .in-block {
+  }
+
+  .gallery {
+    .gallerybox {
+      display:inline-block;
+      padding:1vh;
+    }
+
+    .gallerytext {
+      p {
+        padding-left:0;
+      }
+    }
+  }
+
+  ul, td {
+    padding-left: 1vh !important;
+    padding-right: 1vh !important;
+  }
+
+  #section_SpokenWikipedia {
+    position:relative;
+
+    padding:5px;
+    margin-left:2vh;
+    border: 2px solid white;
+
+    audio {
+      position:relative;
+      left:50%;
+      padding-top:1vh;
+    }
+  }
+
+
+
+  ol.references {
+    margin-left: 2vh;
+    li {
+    padding-left: 1vh;
+    margin-left: 1vh;
+    }
+  }
+
+
+  dl, dt, dd {
+    padding-top: 1.75vh !important;
+  }
+
+  .mw-headline {
+    font-family:'Lora', serif;
+  }
+
+  .thumbcaption {
+    font-size: 0.75em;
+    padding: 0.2em;
+  }
+
+  .tright {
+    float: right;
+    clear: right;
+    margin-left: 2vh;
+    margin-right: 2vh;
+  }
+
+  .tleft {
+    float: left;
+    clear: left;
+    margin-left:2vh;
+    margin-right:2vh;
+  }
+
+  p {
+    line-height: 1.35em !important;
+    margin-top: 1vh;
+  }
+
+  div p:first-of-type, h3 ~ p:first-of-type, h2 ~ p:first-of-type {
+    padding-top:0.5vh;
+    margin-top:0;
+  }
+
+  h1.inblock, h2.inblock, h3.inblock {
+    padding-top:3vh !important;
+  }
+
+  .mw-headline, p {
+    padding-left: 2vh !important;
+  }
+  .infobox {
+    width:22em;
+  }
+
+  p {
+    padding-top:0vh !important;
+  }
+
+  @media all and (max-width:650px) {
+    font-size: 1.2em;
+    .infobox {
+      width: 100%;
+    }
+
+    span {
+      padding-left:2vh;
+    }
+  }
+}

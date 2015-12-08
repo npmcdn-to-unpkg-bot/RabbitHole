@@ -1,0 +1,140 @@
+div.centered-column {
+  width:90%;
+  margin:0 auto;
+  background:#F6F6F6;
+  min-height: 100vh;
+
+  h1 {
+    text-align:center;
+  }
+}
+
+article {
+  min-height:30vh;
+  padding-left: 0 !important;
+
+  .bordered-paragraph {
+    border-left: 3px dotted #e3e3e5;
+    // width:65%;
+    margin-left:2vh;
+    display:block;
+    padding:0.2vh !important;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    background-color: #e3e3e9;
+    width: 82%;
+  }
+
+  .bordered-paragraph > p:last-child {
+    margin-bottom:0;
+  }
+
+  .bordered-paragraph:hover {
+    border-left: 3px dotted #3A729F;
+  }
+}
+
+.relative {
+  position:relative;
+}
+
+div.button-holder {
+  width:100%;
+  clear:both;
+  margin-top:0;
+  padding-top:0;
+  float: right;
+
+  button {
+    font-size:3vh;
+    margin: 2vh;
+    margin-left:0;
+    float:right;
+  }
+
+}
+
+@media screen and (max-width:400px) {
+
+  .centered-column, .container-fluid {
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+    max-width:100vw;
+  }
+
+  h1.title {
+    font-size:3em !important;
+  }
+
+  .wiki, .button-holder  {
+    padding-top:3vh !important;
+  }
+
+  .wiki-search-bar, .wiki-search-results {
+    font-size:1.5em !important;
+  }
+
+  .wiki-search-bar {
+    margin-top:3vh !important;
+  }
+
+  article {
+    font-size:1em;
+  }
+}
+
+div.wiki {
+  width:70%;
+
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.infobox th {
+  padding-left: 0.2em;
+}
+
+input.wiki-search-bar {
+  width:100%;
+  font-size:5vh;
+  color:black;
+  background:transparent;
+  font-weight: normal;
+  border: 2px solid lightgray;
+  padding: 0.2vw;
+  -moz-border-radius:0px; /* Firefox */
+  -webkit-border-radius: 0px; /* Safari, Chrome */
+  -khtml-border-radius: 0px; /* KHTML */
+  border-radius: 0px; /* CSS3 */
+}
+
+.container-fluid {
+  min-width:300px;
+}
+
+ul.wiki-search-results {
+  padding-left:0;
+  list-style-type:none;
+  font-size:3.5vh;
+  margin-top: 0;
+  width:100%;
+  box-shadow: 2px 5px 10px gray;
+
+  li {
+    border-bottom: 3px dotted black;
+    background-color: rgba(239, 239, 239, 0.95);
+    padding:0.4vw;
+  }
+
+  li:last-child {
+    border-bottom:0;
+  }
+
+  li:nth-child(odd) {
+  }
+
+  li.selected {
+    background-color:rgba(219, 229, 219, 0.95);
+    cursor:pointer;
+  }
+}
