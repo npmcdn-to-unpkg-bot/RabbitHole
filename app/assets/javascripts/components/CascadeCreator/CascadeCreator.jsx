@@ -166,7 +166,7 @@
 
     getParagraphs: function(html) {
       console.log(html);
-    }
+    },
 
     handleLink: function(e){
       var html, parent, paragraphs;
