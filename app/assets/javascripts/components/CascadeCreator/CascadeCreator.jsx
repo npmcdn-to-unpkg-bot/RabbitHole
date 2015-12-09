@@ -163,7 +163,7 @@
     },
 
     handleLink: function(e){
-      var html, parent, paragraphs;
+      var html, parent, paragraphs, search;
 
       var searchURL, html;
 
