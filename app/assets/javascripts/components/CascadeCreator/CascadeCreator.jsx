@@ -163,18 +163,17 @@
     },
 
     handleLink: function(e){
-      var html, parent, paragraphs, search;
+      var html, parent, paragraphs;
 
       var searchURL, html;
 
-      if (this.state.urls.length === 0 || this.state.urls.indexOf(e.target.getAttribute("href")) > -1) {
-        if (search = document.getElementById(e.target.getAttribute("href"))) {
-          search.scrollIntoView(true);
-          return;
-        }
-      };
+      // if (this.state.urls.length === 0 || this.state.urls.indexOf(e.target.getAttribute("href")) > -1) {
+      //   if (search = document.getElementById(e.target.getAttribute("href"))) {
+      //     search.scrollIntoView(true);
+      //     return;
+      //   }
+      // };
 
-      this.
       searchURL = window.location.origin + '/wiki/' +
       e.target.getAttribute("href").split("/wiki/")[1];
 
