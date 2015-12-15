@@ -163,7 +163,7 @@
     },
 
     handleLink: function(e){
-      var html, parent, paragraphs;
+      var html, parent, paragraphs, split;
 
       var searchURL, html;
 
@@ -173,9 +173,14 @@
       //     return;
       //   }
       // };
+      
+      split = e.target.getAttribute("href").split("/wiki/")[1];
 
-      searchURL = window.location.origin + '/wiki/' +
-      e.target.getAttribute("href").split("/wiki/")[1];
+      if (typeof split === "undefined") {
+        return;
+      }
+
+      searchURL = window.location.origin + '/wiki/' + split;
 
       $.get(searchURL, function(data){
         html = data;
