@@ -142,7 +142,6 @@
       search = url.split("/wiki/")[1];
 
       if (typeof search === "undefined") {
-        window.open(url, '_blank');
         return false;
       }
 
