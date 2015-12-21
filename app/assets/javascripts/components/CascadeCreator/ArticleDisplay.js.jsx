@@ -9,12 +9,10 @@
     },
 
     handleClick: function(e){
-      e.preventDefault();
       switch (e.target.tagName) {
         case "A":
+          e.stopPropagation();
           this.props.handleLink(e);
-          break;
-        case "P":
           break;
         default:
           break;

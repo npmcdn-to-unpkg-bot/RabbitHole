@@ -1,0 +1,18 @@
+.bordered-paragraph {
+  .bordered-paragraph {
+    width:94%;
+    margin-left:2vh;
+    display:inline-block;
+  }
+  .thumb.tright, .thumb.tleft {
+    clear:none;
+  }
+}
+
+.bordered-paragraph > .bordered-paragraph {
+  background-color:#EEE;
+}
+
+.bordered-paragraph > .bordered-paragraph > .bordered-paragraph {
+  background-color: #e3e3e9;
+}

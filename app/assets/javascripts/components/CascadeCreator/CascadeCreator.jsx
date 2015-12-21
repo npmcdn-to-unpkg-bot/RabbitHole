@@ -8,7 +8,7 @@
     createCascade: function(data){
       var articleContent, title, redirected;
 
-      [articleContent, title, redirected] = this.extractArticle(data, true);
+      [articleContent, title] = this.extractArticle(data, true);
       if (articleContent) {
         this.setState({content: articleContent, title: title, conductingSearch: false, date: Date.now()});
         window.scrollTo(0,0);
@@ -16,40 +16,22 @@
     },
 
     extractArticle: function(data, validate) {
-      var articleContent, title, redirectMsg, tempDiv, redirected;
+      var articleContent, title, redirect;
 
-      tempDiv = document.createElement("div");
-      tempDiv.innerHTML = data.contents;
+      articleContent = this.filterCrud(data.parse["text"]["*"], false);
 
-      articleContent = tempDiv.querySelector("#bodyContent");
-      if (!articleContent && !validate) {
-        this.restartSearch();
-        return;
-      } else {
-        this.setState({numSearches: 0});
+      title = data.parse["title"];
+
+      redirect = data.parse["redirects"];
+      if (redirect[0]) {
+        articleContent = this.addRedirect(articleContent, redirect);
       }
 
-      articleContent = articleContent.innerHTML;
-      if (validate) {
-        if (!this.validate(articleContent)) {
-          this.setState({conductingSearch: true});
-          return [null,null,null];
-        }
-      }
+      return [articleContent, title];
+    },
 
-      redirectMsg = tempDiv.querySelector(".mw-redirectedfrom");
-      redirected = !!redirectMsg;
-
-      if (!validate) {
-        redirectMsg = "";
-        title = null;
-      } else {
-        articleContent = this.process(articleContent, redirectMsg);
-        title = tempDiv.querySelector("#section_0").textContent;
-      }
-
-
-      return [articleContent, title, redirected];
+    addRedirect: function(content, redirect){
+      return '<div class="redirected"><p><em>Redirected from ' + redirect[0]["from"] + '.</em></p></div>' + content;
     },
 
     restartSearch: function(){
@@ -82,53 +64,39 @@
       return Array.prototype.find.call(ctx.querySelectorAll(queryString) || [], callback);
     },
 
-    process: function(articleContent, redirectMsg){
-      var temp, redirect;
+    filterCrud: function(articleContent, child){
+      var div, filterString;
 
-      temp = this.filterCrud(articleContent);
+      div = document.createElement("div");
+      div.innerHTML = articleContent;
 
-      redirect = document.createElement("div");
-      redirect = redirect.appendChild(document.createElement("p"));
+      filterString = ".navbox, br, \
+      strong.error, .hatnote, .edit-page, .metadata, \
+      .mbox-small, .ambox, .portal, #see-also";
 
-      if (redirectMsg && redirectMsg.textContent) {
-        redirectMsg = redirectMsg.textContent;
-        redirect.innerHTML = $.trim(redirectMsg);
-        temp.insertBefore(redirect, temp.firstChild);
+      if (child) {
+        filterString += ", .infobox, .references, .vertical-navbox";
       }
 
-      articleContent = temp.innerHTML;
-      articleContent.replace(/<a(.*?)>(.*?)<\/a>/g, "");
-
-      return articleContent;
-    },
-
-    filterCrud: function(articleContent){
-      var temp;
-
-      temp = document.createElement("div");
-      temp.innerHTML = articleContent;
-
-      this.$$(temp,".navbox, br, \
-      strong.error, .hatnote, .edit-page, .metadata, \
-      .mbox-small, .portal, #see-also", function(node) {
+      this.$$(div, filterString, function(node) {
         node.parentNode.removeChild(node);
       });
 
-      this.$$(temp, ".infobox", function(node){
+      this.$$(div, ".infobox", function(node){
         node.style.borderSpacing = "2px 5px";
       });
 
-      this.$$(temp, "a[href^='/wiki/']", function(node){
+      this.$$(div, "a[href^='/wiki/']", function(node){
         node.setAttribute("href", "https://en.m.wikipedia.org" + node.getAttribute("href"));
       });
 
-      this.$$(temp, 'p, span', function(node){
+      this.$$(div, 'p, span', function(node){
         if ($.trim(node.innerHTML).length === 0) {
           node.parentNode.removeChild(node);
         }
       });
 
-      return temp;
+      return div.innerHTML;
     },
 
     setTitle: function(title){
@@ -140,133 +108,93 @@
     },
 
     getInitialState: function(){
-      return {date: 0, content: "", title: "", conductingSearch: true, toggle: true, e: null, numSearches: 0, urls: []};
+      return {date: 0, content: "", title: "", forceSearch:"", conductingSearch: true, toggle: true, e: null, numSearches: 0};
     },
 
-    getHTML: function(e) {
-
-    },
 
     getParent: function(e) {
       var parent;
       parent = e.target.parentNode;
-
-      while (["I","B"].indexOf(parent.tagName) > -1) {
+      while (["B", "I", "SPAN"].indexOf(parent.tagName) > -1) {
         parent = parent.parentNode;
       }
-
       return parent;
     },
 
-    getParagraphs: function(html) {
-      return $(html).find("p:lt(3)")
+    alreadyClicked: function(url) {
+      var search;
+      if (search = document.getElementById(url)) {
+        search.scrollIntoView(true);
+        return true;
+      }
+      return false;
+    },
+
+    shouldSearch: function(e){
+      var url, search;
+
+      url = e.target.getAttribute("href");
+
+      if (this.alreadyClicked(url)) {
+        return false;
+      }
+
+      search = url.split("/wiki/")[1];
+
+      if (typeof search === "undefined") {
+        window.open(url, '_blank');
+        return false;
+      }
+
+      return search;
     },
 
     handleLink: function(e){
-      var html, parent, paragraphs, split;
+      var searchURL, search, callback;
+      e.preventDefault();
 
-      var searchURL, html;
+      search = this.shouldSearch(e);
 
-      // if (this.state.urls.length === 0 || this.state.urls.indexOf(e.target.getAttribute("href")) > -1) {
-      //   if (search = document.getElementById(e.target.getAttribute("href"))) {
-      //     search.scrollIntoView(true);
-      //     return;
-      //   }
-      // };
-      
-      split = e.target.getAttribute("href").split("/wiki/")[1];
-
-      if (typeof split === "undefined") {
+      if (!search) {
         return;
       }
 
-      searchURL = window.location.origin + '/wiki/' + split;
+      searchURL = "https://en.wikipedia.org/w/api.php?action=parse&format=json&redirects&prop=text&section=0&page=" + search;
 
-      $.get(searchURL, function(data){
-        html = data;
+      callback = function(data){
+        this.appendResult(data,e);
+      }.bind(this);
+
+      $.ajax(this.buildParams(e,searchURL,callback));
+    },
+
+    buildParams: function(e, searchURL, callback){
+      return {
+        method: 'GET',
+        headers: {"Origin": "www.cascades.online"},
+        url: searchURL,
+        dataType: "jsonp",
+        success: callback
+      };
+    },
+
+    appendResult: function(data,e){
+      var div;
+
+      div = document.createElement("div");
+      div.innerHTML = this.filterCrud(data.parse.text["*"], true);
+      if (this.validate(div.innerHTML)) {
+        div.id = e.target.getAttribute("href");
         parent = this.getParent(e);
 
-        paragraphs = this.getParagraphs(html);
-        $("<div></div>").append(paragraphs).addClass("bordered-paragraph").insertAfter(parent);
-      }.bind(this));
-
-
-      // alert('got here');
-      // var search;
-      // e.preventDefault();
-      // if (this.state.urls.length === 0 || this.state.urls.indexOf(e.target.getAttribute("href")) > -1) {
-      //   if (search = document.getElementById(e.target.getAttribute("href"))) {
-      //     search.scrollIntoView(true);
-      //     return;
-      //   }
-      // };
-      // setTimeout(
-      //   function(){
-      //     this.setState({date: Date.now()});
-      //     var searchURL, that, title;
-      //
-      //     this.setState({searches: this.state.urls.concat(e.target.getAttribute("href"))});
-      //
-
-      //       // var articleContent, title2, paragraph, temp, parent, redirect, firstParagraph;
-      //       // temp = $(data);
-      //       //
-      //       // [articleContent, title2, redirect] = that.extractArticle(data, false);
-      //       // paragraph = that.extractParagraph(articleContent, title);
-      //       // temp = document.createElement("div");
-      //       // $(temp).append(paragraph);
-      //       // temp.setAttribute("id", e.target.getAttribute("href"));
-      //       // temp.className = "bordered-paragraph";
-      //       //
-      //       // parent = $(e.target).parent();
-      //       // if (parent.prop("tagName") === "I" || parent.prop("tagName") === "B") {
-      //       //   parent = parent.parent();
-      //       // }
-      //       //
-      //       // $(temp).insertAfter(parent);
-      //       // that.setState({e: null});
-      //       // // temp.scrollIntoView();
-      //     });
-      //   }.bind(this), Date.now() - this.state.date - 5
-
-    },
-
-    extractParagraph: function(articleContent, title, redirect){
-      var temp, temp2, firstParagraph, condition, i;
-      temp2 = document.createElement("div");
-      temp = document.createElement("div");
-      temp.appendChild(temp2);
-      temp2.innerHTML = articleContent;
-
-      firstParagraph = temp.querySelectorAll("div > p");
-      i = 0;
-      while (firstParagraph[i].firstChild.style &&
-             firstParagraph[i].firstChild.style.fontSize === "small") {
-        i += 1;
+        $(div).addClass("bordered-paragraph clear-fix").insertAfter(parent);
       }
-
-      firstParagraph = Array.prototype.slice.call(firstParagraph, i, i+3);
-      console.log("here is the content of the first paragraph");
-      console.log(firstParagraph[i].textContent);
-      if (firstParagraph[i].textContent.indexOf("list") > -1) {
-        return this.myFind(temp, 'div > p, dd', function(node){
-          condition = $.trim(node.textContent).indexOf(title) === 0;
-          console.log("Found " + title + "? " + condition);
-          return condition;
-        }) || firstParagraph;
-      } else {
-        return firstParagraph;
-      }
-    },
-
-    handleParagraph: function(){
-
     },
 
     render: function(){
       return (
               <div className="centered-column relative">
-                <MyComponents.WikiSearch toggleSearch={this.toggleSearch} toggle={this.state.toggle} createCascade={this.createCascade} setTitle={this.setTitle} />
+                <MyComponents.WikiSearch forceSearch={this.state.forceSearch} toggleSearch={this.toggleSearch} toggle={this.state.toggle} createCascade={this.createCascade} setTitle={this.setTitle} />
                 <MyComponents.Title value={this.state.title || "Create a Rabbit Hole."} />
                 <MyComponents.ArticleDisplay handleLink={this.handleLink} handleParagaph={this.handleParagraph} content={this.state.content} />
               </div>

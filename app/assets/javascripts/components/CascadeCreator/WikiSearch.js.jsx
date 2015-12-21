@@ -45,6 +45,7 @@
         dataType: "jsonp",
         success: this.updateTitleList
       });
+
     },
 
     updateTitleList: function(json){
@@ -89,6 +90,12 @@
       this.setState({idx: Math.max(this.state.idx + 1, -1)});
     },
 
+    componentWillReceiveProps: function(newProps){
+      if (newProps.forceSearch) {
+        this.conductSearch(newProps.forceSearch);
+      }
+    },
+
     conductSearch: function(title){
       clearTimeout(this.timeout);
       this.timeout = null;
@@ -96,12 +103,55 @@
 
       this.setState({search: title, waiting: true, results: []});
 
-      searchURL = 'https://alloworigin.com/get?url=' +
-      'http://en.m.wikipedia.org/wiki/' + encodeURIComponent(title.split(" ").join("_"));
-      $.get(searchURL, function(data){
-        this.props.createCascade(data);
-        this.props.toggleSearch();
-      }.bind(this));
+
+      var term, searchURL;
+      this.setState({waiting: false});
+
+      if (title.length === 0) {
+        return;
+      }
+
+      searchURL = "https://en.wikipedia.org/w/api.php?action=parse&format=json&redirects&prop=text&page=" + title;
+
+      $.ajax({
+        method: 'GET',
+        headers: {"Origin": "www.cascades.online"},
+        url: searchURL,
+        dataType: "jsonp",
+        success: function(data){
+          console.log(data);
+          // redirect = data.parse["redirects"];
+          // var article, redirect;
+          // article = data.parse["text"]["*"];
+          //
+          // if (redirect = this.getRedirect(article)) {
+          //   this.conductSearch(redirect).innerText;
+          //   return;
+          // }
+          this.props.createCascade(data);
+          this.props.toggleSearch();
+        }.bind(this)
+      });
+
+
+      // 'https://alloworigin.com/get?url=' +
+      // 'http://en.m.wikipedia.org/wiki/' + encodeURIComponent(title.split(" ").join("_"));
+
+      // $.get(searchURL, function(data){
+      //   this.props.createCascade(data);
+      //   this.props.toggleSearch();
+      // }.bind(this));
+    },
+
+    getRedirect: function(articleContent){
+      var div, newSearch;
+      if (articleContent.indexOf("redirectText") > -1) {
+        div = document.createElement("div");
+        div.innerHTML = articleContent;
+        return div.querySelector("a");
+      }
+
+      return false;
     },
 
     componentDidUpdate: function(){
